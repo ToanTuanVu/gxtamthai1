@@ -1,0 +1,203 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="/img/ico/favicon.ico?">
+  <%  include emlements/css %>
+</head>
+
+<body>
+  <!--[if lt IE 8]>
+		<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+	<![endif]-->
+  <!-- Start Left menu area -->
+
+  <!-- End Left menu area -->
+  <!-- Start Welcome area -->
+  <div style="position: vertical">
+
+  </div>
+
+  <%  include emlements/defaultMenu2 %>
+  <%  include emlements/defaultHeader2 %>
+  <div class="analytics-sparkle-area">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="all-content-wrapper">
+          <div class="app-content content container-fluid" style="margin-top: 50px;">
+            <div class="content-wrapper">
+              <div class="content-body">
+                <div class="row">
+                  <div class="col-xs-12">
+                    <div class="card">
+                      <div class="card-header">
+                        <div class="form-group row">
+                          <div class="col-sm-6">
+                            <div class="col-md-2">
+                              <button type="submit" onclick="done()" class="btn btn-sm btn-success">
+                                <i class="ft-search"></i> Đã giao
+                              </button>
+                            </div>
+
+                            <div class="col-md-2">
+                              <button type="submit" onclick="delivering()" class="btn btn-sm btn-primary">
+                                <i class="ft-search"></i> Đang giao
+                              </button>
+                            </div>
+
+                            <div class="col-md-2">
+                              <button type="submit" onclick="just()" class="btn btn-sm btn-warning">
+                                <i class="ft-search"></i> Chưa giao
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        <hr>
+                        <div class="card-body collapse in">
+                          <div class="table-responsive">
+                            <table id="done" class="table table-bordered mb-0" style="">
+                              <thead>
+                                <tr>
+                                  <th>Id</th>
+                                  <th>Mã đơn hàng</th>
+                                  <th>Tên khách hàng</th>
+                                  <th>Địa chỉ</th>
+                                  <th>Tổng tiền</th>
+                                  <th>Trạng thái</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <% for(var i=0; i< orders.length; i++){ %>
+                                <% if(orders[i].status == "2"){ %>
+                                <tr>
+                                  <td><%= orders[i].id %></td>
+                                  <td><%= orders[i].orderName %></td>
+                                  <td><%= orders[i].customerName %></td>
+                                  <td><%= orders[i].address %></td>
+                                  <td><%= orders[i].sumMoney %></td>
+
+                                  <td>
+                                    <div class="tag tag-success">Đã giao</div>
+
+                                  </td>
+
+                                </tr>
+                                <% }%>
+                                <% }%>
+                              </tbody>
+                            </table>
+
+                            <table id="delivering" class="table table-bordered mb-0" style="display:none;">
+                              <thead>
+                                <tr>
+                                  <th>Id</th>
+                                  <th>Mã đơn hàng</th>
+                                  <th>Tên khách hàng</th>
+                                  <th>Địa chỉ</th>
+
+                                  <th>Tổng tiền</th>
+                                  <th>Trạng thái</th>
+                                </tr>
+                              </thead>
+
+                            </table>
+
+                            <table id="just" class="table table-bordered mb-0" style="display:none;">
+                              <thead>
+                                <tr>
+                                  <th>Id</th>
+                                  <th>Mã đơn hàng</th>
+                                  <th>Tên khách hàng</th>
+                                  <th>Địa chỉ</th>
+
+                                  <th>Tổng tiền</th>
+                                  <th>Trạng thái</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <% include emlements/defaultFooter2 %>
+    <!-- jquery
+		============================================ -->
+    <script src="js/vendor/jquery-1.12.4.min.js"></script>
+    <!-- bootstrap JS
+		============================================ -->
+    <script src="js/bootstrap.min.js"></script>
+    <!-- wow JS
+		============================================ -->
+    <script src="js/wow.min.js"></script>
+    <!-- price-slider JS
+		============================================ -->
+    <script src="js/jquery-price-slider.js"></script>
+    <!-- meanmenu JS
+		============================================ -->
+    <script src="js/jquery.meanmenu.js"></script>
+    <!-- owl.carousel JS
+		============================================ -->
+    <script src="js/owl.carousel.min.js"></script>
+    <!-- sticky JS
+		============================================ -->
+    <script src="js/jquery.sticky.js"></script>
+    <!-- scrollUp JS
+		============================================ -->
+    <script src="js/jquery.scrollUp.min.js"></script>
+    <!-- counterup JS
+		============================================ -->
+    <script src="js/counterup/jquery.counterup.min.js"></script>
+    <script src="js/counterup/waypoints.min.js"></script>
+    <script src="js/counterup/counterup-active.js"></script>
+    <!-- mCustomScrollbar JS
+		============================================ -->
+    <script src="js/scrollbar/jquery.mCustomScrollbar.concat.min.js"></script>
+    <script src="js/scrollbar/mCustomScrollbar-active.js"></script>
+    <!-- metisMenu JS
+		============================================ -->
+    <script src="js/metisMenu/metisMenu.min.js"></script>
+    <script src="js/metisMenu/metisMenu-active.js"></script>
+    <!-- morrisjs JS
+		============================================ -->
+    <script src="js/morrisjs/raphael-min.js"></script>
+    <script src="js/morrisjs/morris.js"></script>
+    <script src="js/morrisjs/morris-active.js"></script>
+    <!-- morrisjs JS
+		============================================ -->
+    <script src="js/sparkline/jquery.sparkline.min.js"></script>
+    <script src="js/sparkline/jquery.charts-sparkline.js"></script>
+    <script src="js/sparkline/sparkline-active.js"></script>
+    <!-- calendar JS
+		============================================ -->
+    <script src="js/calendar/moment.min.js"></script>
+    <script src="js/calendar/fullcalendar.min.js"></script>
+    <script src="js/calendar/fullcalendar-active.js"></script>
+    <!-- plugins JS
+		============================================ -->
+    <script src="js/plugins.js"></script>
+    <!-- main JS
+		============================================ -->
+    <script src="js/main.js"></script>
+    <!-- tawk chat JS
+		============================================ -->
+    <script src="js/tawk-chat.js"></script>
+</body>
+
+</html>
