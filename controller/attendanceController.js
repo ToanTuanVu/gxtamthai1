@@ -291,11 +291,6 @@ router.postAttendance = (req, res, next) => {
             con.query('UPDATE attendence SET point = ? WHERE id = ?', [dataJS,id]);
             res.send('updated');
         })
-        // con.query('UPDATE attendence SET point = ? WHERE DATE_FORMAT(date,"%M %d %Y") = ? and idStudent = ?', [req.body.value, req.body.name, req.body.pk], function (err, rows, fiels) {
-        //     if (err) throw err;
-        //     else {
-        //         res.send('updated');
-        //     }
-        // })
+        
 }
 module.exports = router;
