@@ -156,13 +156,12 @@ const room = require('../model/classModel');
 
 router.getIndex = (req, res, next) => {
     let idClass = 1;
-    if(req.query.idClass != undefined)
-    {
+    if (req.query.idClass != undefined) {
         idClass = req.query.idClass;
     }
     con.query('SELECT * from class', function (err, rows, fields) {
         let roomAll = [];
-        
+
         let listDay = [];
         let studentAll = [];
         rows.forEach(element => {
@@ -170,64 +169,133 @@ router.getIndex = (req, res, next) => {
 
         })
 
-         con.query('SELECT st.id , st.studentCode,st.holyName    , st.lastName, st.firstName,cl.name as "clName",att.point FROM `attendence` att, student st,class cl where st.id = att.idStudent and st.status =1  and cl.id = st.idClass and st.idClass = ? ORDER BY st.firstName ASC',[idClass], function (err, rows, fields) {
+        con.query('SELECT att.id as attID, st.studentCode,st.holyName    , st.lastName, st.firstName,cl.name as "clName",att.point FROM `attendence` att, student st,class cl where st.id = att.idStudent and st.status =1  and cl.id = st.idClass and st.idClass = ? ORDER BY st.firstName ASC', [idClass], function (err, rows, fields) {
             console.log(rows);
-            if(rows.length >0 ){
-            rows.forEach(element =>{
-                studentAll = rows;
-                listDay.push(JSON.parse(element.point));
-                console.log(listDay);
-            })
-            console.log(listDay[0][0].date);
-            res.render('student/attendance', { listDay: listDay, studentAll: studentAll, roomAll: roomAll });
+            if (rows.length > 0) {
+                rows.forEach(element => {
+                    studentAll = rows;
+                    listDay.push(JSON.parse(element.point));
+                    console.log(listDay);
+                })
+                console.log(listDay[0][0].date);
+                res.render('student/attendance', { listDay: listDay, studentAll: studentAll, roomAll: roomAll });
             }
-            
+            else {
+                res.render('student/attendance', { listDay: listDay, studentAll: studentAll, roomAll: roomAll });
+            }
+
 
 
 
         })
-        
-        
+
+
     })
-    
+
 }
 router.addAttendance = (req, res, next) => {
+    let check = 0;
     const idClass = req.body.idClass;
     const date = new Date();
     const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'long', day: '2-digit' })
     const [{ value: month }, , { value: day }, , { value: year }] = dateTimeFormat.formatToParts(date)
     currentDay = `${month} ${day} ${year}`;
     console.log(currentDay);
-    con.query('SELECT st.id as idStudent, ms.id as idmatchScholastic from student st , matchScholastic ms WHERE st.idScholastic = ms.idScholastic and st.idSemester = ms.idSemester and st.status = 1 and ms.idClass = ?', [idClass], function (err, rows, field) {
+    //get all student from class
+    con.query('SELECT st.id as idStudent, ms.id as idmatchScholastic from student st , matchScholastic ms WHERE st.idScholastic = ms.idScholastic and st.idSemester = ms.idSemester and st.status = 1 and ms.idClass = ?', [idClass], async function (err, rows, field) {
 
         let newSqls = [];
-        let dataInsert = {
+        const dataInsert = {
             date: currentDay,
-            point: null 
-         };
-        let dataOj=[];
-        dataOj.push(dataInsert);
-        let dataJS = JSON.stringify(dataOj);
+            point: null
+        };
+        let dataOj = [];
+        //dataOj.push(dataInsert);
+        let dataJS;
         console.log(dataJS);
-        rows.forEach(function (element, index) {
-            newSqls.push(new Array(element.idStudent, element.idmatchScholastic,dataJS));
-        });
-        console.log(newSqls);
+        const studentAll = rows;
+        await studentAll.forEach(function (student, index) {
+            //get attendence of id student and sholastic
+            con.query('SELECT * from attendence where idStudent = ? and idmatchScholastic = ?', [student.idStudent, student.idmatchScholastic], function (err, rows, fields) {
+                //if it doesn't have attendance
+                if (rows.length > 0) {
+                    
+                    rows.forEach(element => {
+                        //get point with date of 1 student
+                        const pointAll = JSON.parse(element.point);
+                        pointAll.forEach(point => {
+                            //check it has a currenday(add attendance already)
+                            if (point.date == currentDay) {
+
+                                check =1;
+                                return;
+                            }
+                        })
+                        if(check){
+                            return;
+                        }
+                        dataOj = pointAll;
+                        dataOj.push(dataInsert);
+                        dataJS = JSON.stringify(dataOj);
+                        con.query('update attendence SET point = ? where id = ?', [dataJS, element.id]);
+                    })
+
+                }
+                else {
+                    dataOj.push(dataInsert);
+                    dataJS = JSON.stringify(dataOj);
+                    con.query('INSERT INTO `attendence` (idStudent,idmatchScholastic,point) VALUES (?,?,?)', [student.id, student.idmatchScholastic, dataJS]);
+                }
+            })
+            if(check)
+            {return;}
+        })
+        // rows.forEach(function (element, index) {
+        //     newSqls.push(new Array(element.idStudent, element.idmatchScholastic,dataJS));
+        // });
+        // console.log(newSqls);
         // res.json({ msg: 'abc' });
 
-        con.query('INSERT INTO `attendence` (idStudent,idmatchScholastic,point) VALUES ?', [newSqls], function (err, rows, fields) {
-            if (err) throw err
-            else {
-                console.log(rows);
+        // con.query('INSERT INTO `attendence` (idStudent,idmatchScholastic,point) VALUES (?,?,?)', [], function (err, rows, fields) {
+        //     if (err) throw err
+        //     else {
+        //         console.log(rows);
 
-                res.redirect('/attendance');
-            }
+        //         res.redirect('/attendance');
+        //     }
 
-        })
+        // })
+        res.redirect('/attendance?idClass='+idClass);
     })
 
 }
 router.postAttendance = (req, res, next) => {
-
+    console.log("posstttt!!");
+        console.log(req.body);
+        const pointUpdate = req.body.value;
+        const date = req.body.name;
+        const id = req.body.pk;
+        var sql="";
+        var temp;
+        //SELECT * FROM `attendence` WHERE DATE_FORMAT(date,"%M %d %Y")= "August 04 2020"
+        con.query('SELECT * from attendence where id = ?',[id],function(err,rows,fields){
+            let point = JSON.parse(rows[0].point);
+            point.forEach(element=>{
+                if(element.date == date){
+                    element.point = pointUpdate;
+                    return;
+                }
+            })
+            let dataJS = JSON.stringify(point);
+            console.log(sql);
+            con.query('UPDATE attendence SET point = ? WHERE id = ?', [dataJS,id]);
+            res.send('updated');
+        })
+        // con.query('UPDATE attendence SET point = ? WHERE DATE_FORMAT(date,"%M %d %Y") = ? and idStudent = ?', [req.body.value, req.body.name, req.body.pk], function (err, rows, fiels) {
+        //     if (err) throw err;
+        //     else {
+        //         res.send('updated');
+        //     }
+        // })
 }
 module.exports = router;

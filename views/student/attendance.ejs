@@ -40,7 +40,7 @@
                       </select>
                     </div>
                     <div class="col-lag-6 col-md-6 col-sm-6 col-xs-6 form-group">
-                      <button type="submit" class="btn btn-custon-rounded-four btn-success col-lag-6 col-md-6 col-sm-6 col-xs-6">Thêm</button>
+                      <button type="submit" class="btn btn-custon-rounded-four btn-success col-lag-6 col-md-6 col-sm-6 col-xs-6">Điểm danh hôm nay</button>
                      </div>
                   </form>
                 </div>
@@ -57,7 +57,7 @@
                       </select>
                     </div>
                     <div class="col-lag-6 col-md-6 col-sm-6 col-xs-6 form-group">
-                      <button type="submit" class="btn btn-custon-rounded-four btn-success col-lag-6 col-md-6 col-sm-6 col-xs-6">Thêm</button>
+                      <button type="submit" class="btn btn-custon-rounded-four btn-success col-lag-6 col-md-6 col-sm-6 col-xs-6">Xem</button>
                      </div>
                   </form>
                 </div>
@@ -76,10 +76,11 @@
                       <th data-field="id">ID</th>
                       <th data-field="holyName" data-editable="false">Tên Thánh</th>
                       <th data-field="name" data-editable="false">Họ và Tên</th>
-                      <%for(let k=0; k < listDay[0].length ;k++){%>
+                      <%
+                      if(listDay.length > 0){for(let k=0; k < listDay[0].length ;k++){%>
                           <th data-id="username" id="username" data-field="<%=listDay[0][k].date%>" data-editable="true">
                             <%=listDay[0][k].date%></th>
-                          <% }%>
+                          <% }}%>
                           <th data-field="class" data-editable="false">Lớp</th>
                           <!-- <th data-field="action">Action</th> -->
                           </tr>
@@ -90,7 +91,7 @@
                               let k=0;
                     %>
 
-                            <tr data-id="username" id="username" data-idfield="<%= studentAll[i].id %>">
+                            <tr data-id="username" id="username" data-idfield="<%= studentAll[i].attID %>">
                               <td><%= studentAll[i].studentCode %></td>
                               <td><%= studentAll[i].holyName %></td>
                               <td><%= studentAll[i].lastName +" "+ studentAll[i].firstName %></td>
