@@ -244,7 +244,7 @@ router.addAttendance = (req, res, next) => {
                 else {
                     dataOj.push(dataInsert);
                     dataJS = JSON.stringify(dataOj);
-                    con.query('INSERT INTO `attendence` (idStudent,idmatchScholastic,point) VALUES (?,?,?)', [student.id, student.idmatchScholastic, dataJS]);
+                    con.query('INSERT INTO `attendence` (idStudent,idmatchScholastic,point) VALUES (?,?,?)', [student.idStudent, student.idmatchScholastic, dataJS]);
                 }
             })
             if(check)
